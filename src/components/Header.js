@@ -1,38 +1,16 @@
 import React from 'react'
-import Carousel from 'react-bootstrap/Carousel'
+import bgImg from './carousel1.jpeg'
 
-
-const Header = () => {
+export default function Header() {
     return (
         <div>
-            <Carousel>
-            <Carousel.Item>
-                <img
-                className="d-block w-100"
-                src={'./carousel1.jpeg'}
-                alt="First slide"
-                />
-
-            </Carousel.Item>
-            <Carousel.Item>
-                <img
-                className="d-block w-100"
-                src={'./carousel2.jpeg'}
-                alt="Third slide"
-                />
-
-            </Carousel.Item>
-            <Carousel.Item>
-                <img
-                className="d-block w-100"
-                src={'./carousel3.jpg'}
-                alt="Third slide"
-                />
-            </Carousel.Item>
-            </Carousel>
+            <header>
+                <div>
+                <figure className="overlay" >      
+                    <img src={bgImg} className="heade w-100"></img>
+                    </figure>
+                </div>
+            </header>
         </div>
     )
 }
-
-export default Header;
-

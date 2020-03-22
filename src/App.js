@@ -6,7 +6,7 @@ import Pagination from "react-js-pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
-import Header from './components/Header'
+import Header from './components/Header';
 
 
 let API_KEY = '26c6dfbd83ff3e3d65592404e691361e';
@@ -134,10 +134,9 @@ function App() {
           </Navbar.Collapse>
         </Navbar>
 
-     <div className="slick-carousel">
-     <Header movieList={movies}/>
+     <div>
+     <Header/>
      </div>
-      
 
       <div className="range col-md-5 mx-auto mt-5 container-fluid text-white">
       <InputRange
