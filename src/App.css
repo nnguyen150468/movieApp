@@ -1,3 +1,5 @@
+@import '/node_modules/react-input-range/lib/css/index.css';
+
 .App {
   text-align: center;
 }
@@ -24,6 +26,10 @@
   color: white;
 }
 
+.App{
+  background-color: #282c34;
+}
+
 .App-link {
   color: #61dafb;
 }
@@ -35,4 +41,52 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.scroll {
+  overflow-y: scroll;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #E50914;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #E50914;
+}
+
+.date {
+  color: lightgrey;
+}
+
+
+.range {
+  width : 40%;
+  margin-bottom : 20px;
+
+}
+
+.input-range__track {
+  background-color: rgb(0, 0, 0);
+}
+
+.input-range__slider {
+  border: 2px solid #E50914;
+  background-color: #E50914;
+}
+
+.input-range__track--active {
+  background-color: #E50914;
 }
