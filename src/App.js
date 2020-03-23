@@ -7,6 +7,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import InputRange from 'react-input-range';
 import 'react-input-range/lib/css/index.css';
 import Header from './components/Header';
+import ReactModal from 'react-modal';
+import YouTube from '@u-wave/react-youtube'
 
 
 let API_KEY = '26c6dfbd83ff3e3d65592404e691361e';
@@ -21,6 +23,10 @@ function App() {
   let [genres, setGenres] = useState([]);
 
   let [moviePage, setMoviePage] = useState({});
+
+  let [modal, setModal] = useState(false);
+
+  let [trailer, setTrailer] = useState('');
 
   let CurrentPlaying = async () => {
     console.log('currently playing')
@@ -97,6 +103,15 @@ function App() {
     }
   }
 
+  let openModal = async (movieID) => {
+    let url = `https://api.themoviedb.org/3/movie/${movieID}/videos?api_key=${API_KEY}&language=en-US`;
+    let response = await fetch(url);
+    let data = await response.json();
+    console.log('hehe data video:', data)
+    setTrailer(data.results[0].key)
+    setModal(true);
+  }
+
   // pagination
   let [page, setActivePage] = useState(1);
   let handlePageChange = async (pageNumber)=> {
@@ -147,9 +162,17 @@ function App() {
         Rating
       </div>   
 
-      <MovieCard movieList={movies} genreList={genres}/>
+      <MovieCard movieList={movies} genreList={genres} openModal={openModal}/>
         <div className="text-white d-flex justify-content-center mt-5">
-        
+      <ReactModal
+        isOpen={modal}
+        style={{ overlay: {display:"flex",justifyContent:"center"}, content: {width:"70%",height:"70%", position:"relative"} }}
+        onRequestClose={()=>setModal(false)}>
+          <YouTube video={trailer} autoplay className="video"/>
+        </ReactModal>
+      
+
+
       <Pagination
       prevPageText='prev'
       nextPageText='next'

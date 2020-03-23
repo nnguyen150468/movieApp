@@ -37,6 +37,7 @@ const MovieCard = (props) => {
             <Card.Footer><div style={{fontSize:15}}><span className="text-danger h5">&#9733;</span>{movie.vote_average}</div></Card.Footer>
             <p style={{fontSize:15}}><span className="text-danger">&hearts;</span>{movie.popularity}</p>
           </MDBContainer>
+          <a onClick={()=>props.openModal(movie.id)}>Trailer</a>
             </Card>
           
         )
