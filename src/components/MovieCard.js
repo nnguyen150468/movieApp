@@ -16,7 +16,7 @@ const MovieCard = (props) => {
             }  
         }
         return (
-            <Card className="col-md-4 p-3" style={{backgroundColor: '#282c34'}}>
+            <Card className="nguyen-card col-md-4 p-3" style={{backgroundColor: 'rgba(40,44,52,0.1'}}>
                   <MDBContainer >
             <MDBView hover zoom>
               <img src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`} class="img-fluid" alt={movie.title} />

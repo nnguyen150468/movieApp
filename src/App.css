@@ -2,6 +2,8 @@
 
 .App {
   text-align: center;
+  /* background-image: linear-gradient(to right, #050154, #480c65, #140022); */
+  background-image: linear-gradient(to right, #030040, #2e0741, #140022);
 }
 
 .App-logo {
@@ -16,7 +18,9 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  /* background-color: #282c34; */
+  /* background-image: linear-gradient(to right, #050154, #480c65, #140022); */
+  background-image: linear-gradient(to right, #030040, #2e0741, #140022);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -94,4 +98,8 @@
 .video {
   width: 100%;
   height: 100%;
+}
+
+.nguyen-navbar {
+  background-color: black;
 }

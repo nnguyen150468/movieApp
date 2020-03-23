@@ -118,7 +118,7 @@ function App() {
     setActivePage(pageNumber);
     console.log(`active page is ${pageNumber}`);
     console.log('key current is:', key);
-    let url = `https://api.themoviedb.org/3/movie/${key}?api_key=${API_KEY}&language=en-US&page=${page}`
+    let url = `https://api.themoviedb.org/3/movie/${key}?api_key=${API_KEY}&language=en-US&page=${pageNumber}`
     let response = await fetch(url);
     let data = await response.json();
     console.log('top rated data:', data);
@@ -127,7 +127,7 @@ function App() {
   
    return (
     <div className="App">
-              <Navbar className="fixed-top" bg="dark" expand="lg">
+              <Navbar className="nguyen-navbar fixed-top" expand="lg">
           <Navbar.Brand href="#home"><img border="0" height="40px" src="https://fontmeme.com/permalink/200322/c759b45177dedb749000426d3db679bd.png" alt="Nguyen2"></img></Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
