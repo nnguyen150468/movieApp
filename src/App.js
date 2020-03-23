@@ -131,7 +131,7 @@ function App() {
     <div className="App">
               <Navbar className="nguyen-navbar fixed-top" expand="lg">
           <Navbar.Brand href="#home"><img border="0" height="40px" src="https://fontmeme.com/permalink/200322/c759b45177dedb749000426d3db679bd.png" alt="Nguyen2"></img></Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Toggle aria-controls="basic-navbar-nav" className="text-white bg-light" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
               <Nav.Link href="#home" style={{color: "white"}} onClick={()=>PlayNowOrTopRated('now_playing')}>Currently Playing</Nav.Link>
