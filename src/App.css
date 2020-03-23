@@ -103,3 +103,30 @@
 .nguyen-navbar {
   background-color: black;
 }
+
+.pagination > li > a,
+.pagination > li > span {
+  position: relative;
+  float: left;
+  padding: 6px 12px;
+  line-height: 1.42857143;
+  text-decoration: none;
+  color: red;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin-left: -1px;
+}
+
+.page-link{
+  background-color: red;
+}
+
+.page-item {
+  color: red;
+  font-size: 3em;
+}
+
+.pagination > li > a:hover {
+  background-color:  #218838;
+  color: white;
+}

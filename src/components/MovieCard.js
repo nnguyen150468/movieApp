@@ -19,7 +19,7 @@ const MovieCard = (props) => {
             <Card className="nguyen-card col-md-4 p-3" style={{backgroundColor: 'rgba(40,44,52,0.1'}}>
                   <MDBContainer >
             <MDBView hover zoom>
-              <img src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`} class="img-fluid" alt={movie.title} />
+              <img src={movie.poster_path? `https://image.tmdb.org/t/p/w1280${movie.poster_path}`: `./noposter.jpg`} class="img-fluid" alt={movie.title} />
               <MDBMask className="d-flex container-fluid" overlay="black-strong" >
                   <Card.ImgOverlay className="text-white align-center my-auto scroll text-center">
                   <Card.Title><h3>{movie.title}</h3></Card.Title>
@@ -29,7 +29,7 @@ const MovieCard = (props) => {
                     )}
                  </Card.Text>
                 
-                  <Card.Subtitle className="mb-2"><div className="date" style={{fontSize: 14}}>{movie.release_date.substring(0,4)}</div></Card.Subtitle>
+                        <Card.Subtitle className="mb-2"><div className="date" style={{fontSize: 14}}>{movie.release_date? movie.release_date.substring(0,4) : '' }</div></Card.Subtitle>
                   <Card.Text><div style={{fontSize: 15}}>{movie.overview}</div></Card.Text>
                   </Card.ImgOverlay>    
               </MDBMask>
@@ -37,7 +37,7 @@ const MovieCard = (props) => {
             <Card.Footer><div style={{fontSize:15}}><span className="text-danger h5">&#9733;</span>{movie.vote_average}</div></Card.Footer>
             <p style={{fontSize:15}}><span className="text-danger">&hearts;</span>{movie.popularity}</p>
           </MDBContainer>
-          <a onClick={()=>props.openModal(movie.id)}>Trailer</a>
+                <a onClick={()=>props.openModal(movie.id)}>Trailer</a>
             </Card>
           
         )

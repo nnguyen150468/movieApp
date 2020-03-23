@@ -14,7 +14,6 @@ import YouTube from '@u-wave/react-youtube'
 let API_KEY = '26c6dfbd83ff3e3d65592404e691361e';
 let keyword = '';
 
-
 function App() {
   let [movies, setMovies] = useState([]);
 
@@ -27,6 +26,10 @@ function App() {
   let [modal, setModal] = useState(false);
 
   let [trailer, setTrailer] = useState('');
+
+  let [sortingKey, setSortingKey] = useState('');
+
+  let [wayToFindData, setWayToFindData] = useState('');
 
   let CurrentPlaying = async () => {
     console.log('currently playing')
@@ -49,8 +52,8 @@ function App() {
   let [key, setKey] = useState('now_playing')
   let PlayNowOrTopRated = async (key) => {
     setKey(key);
-    console.log('page:', page)
-    let url = `https://api.themoviedb.org/3/movie/${key}?api_key=${API_KEY}&language=en-US&page=${page}`
+    setActivePage(1);
+    let url = `https://api.themoviedb.org/3/movie/${key}?api_key=${API_KEY}&language=en-US&page=1`
     let response = await fetch(url);
     let data = await response.json();
     console.log('top rated data:', data);
@@ -88,7 +91,8 @@ function App() {
     if(!movies){
       setMovies(movieList);
     } else {
-      let mostToLeast = [...movies].sort((a,b)=>b[key] - a[key])
+      let mostToLeast = [...movies].sort((a,b)=>b[key] - a[key]);
+      setActivePage(1);
       setMovies(mostToLeast);
       console.log('most to least',mostToLeast);
     }
@@ -98,9 +102,21 @@ function App() {
     if(!movies){
       setMovies(movieList);
     } else {
-      let leastToMost = [...movies].sort((a,b)=>a[key]-b[key])
+      let leastToMost = [...movies].sort((a,b)=>a[key]-b[key]);
+      setActivePage(1);
       setMovies(leastToMost);
     }
+  }
+
+  let sortMovies = async () => {
+    setActivePage(1);
+    setWayToFindData('discover/')
+    console.log('sortingKey:',sortingKey);
+    let url = `https://api.themoviedb.org/3/${wayToFindData}/movie?sort_by=${sortingKey}&api_key=${API_KEY}&language=en-US&page=${page}`
+    let response = await fetch(url);
+    let data = await response.json();
+    setMovies(data.results)
+    console.log('sorted results:', data.results)
   }
 
   let openModal = async (movieID) => {
@@ -108,7 +124,7 @@ function App() {
     let response = await fetch(url);
     let data = await response.json();
     console.log('hehe data video:', data)
-    setTrailer(data.results[0].key)
+    setTrailer(data.results.length>0 ? data.results[0].key : 'uKLSQPhERnU')
     setModal(true);
   }
 
@@ -118,7 +134,12 @@ function App() {
     setActivePage(pageNumber);
     console.log(`active page is ${pageNumber}`);
     console.log('key current is:', key);
-    let url = `https://api.themoviedb.org/3/movie/${key}?api_key=${API_KEY}&language=en-US&page=${pageNumber}`
+    let url = ''
+    if(wayToFindData==="discover/"){
+      url = `https://api.themoviedb.org/3/${wayToFindData}movie?sort_by=${sortingKey}&api_key=${API_KEY}&language=en-US&page=${pageNumber}`
+    } else if(wayToFindData===''){
+      url = `https://api.themoviedb.org/3/movie/?api_key=${API_KEY}&language=en-US&page=${pageNumber}`
+    }
     let response = await fetch(url);
     let data = await response.json();
     console.log('top rated data:', data);
@@ -136,11 +157,11 @@ function App() {
               <Nav.Link href="#link" style={{color: "white"}} onClick={()=>PlayNowOrTopRated('top_rated')}>Top Rated</Nav.Link>
               <NavDropdown title={<span className="text-white">Sort</span>} className="text-danger" id="basic-nav-dropdown">
                 {/* <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item> */}
-                <NavDropdown.Item className="bg-dark" href="#action/3.2"><a className="text-white" onClick={()=>mostToLeast('popularity')}>Most To Least Popular</a></NavDropdown.Item>
-                <NavDropdown.Item className="bg-dark" href="#action/3.3"><a className="text-white" onClick={()=>leastToMost('popularity')}>Least To Most Popular</a></NavDropdown.Item>
+                <NavDropdown.Item className="bg-dark" href="#action/3.2"><a className="text-white" onClick={()=>sortMovies(setSortingKey('popularity.desc'))}>Most To Least Popular</a></NavDropdown.Item>
+                <NavDropdown.Item className="bg-dark" href="#action/3.3"><a className="text-white" onClick={()=>sortMovies(setSortingKey('popularity.asc'))}>Least To Most Popular</a></NavDropdown.Item>
                 <NavDropdown.Divider bg="dark" />
-                <NavDropdown.Item className="bg-dark" href="#action/3.4"><a className="text-white" onClick={()=>mostToLeast('vote_average')}>Highest to Lowest Rating</a></NavDropdown.Item>
-                <NavDropdown.Item className="bg-dark" href="#action/3.5"><a className="text-white" onClick={()=>leastToMost('vote_average')}>Lowest to Highest Rating</a></NavDropdown.Item>
+                <NavDropdown.Item className="bg-dark" href="#action/3.4"><a className="text-white" onClick={()=>sortMovies(setSortingKey('vote_average.desc'))}>Highest to Lowest Rating</a></NavDropdown.Item>
+                <NavDropdown.Item className="bg-dark" href="#action/3.5"><a className="text-white" onClick={()=>sortMovies(setSortingKey('vote_average.asc'))}>Lowest to Highest Rating</a></NavDropdown.Item>
               </NavDropdown>
             </Nav>
             <Form inline>
@@ -174,6 +195,7 @@ function App() {
 
 
       <Pagination
+      className="pagination text-danger bg-danger"
       prevPageText='prev'
       nextPageText='next'
       firstPageText='first'
