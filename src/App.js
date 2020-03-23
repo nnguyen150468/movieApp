@@ -48,6 +48,8 @@ function App() {
 
   let [key, setKey] = useState('now_playing')
   let PlayNowOrTopRated = async (key) => {
+    page=1;
+    setActivePage(1);
     setKey(key);
     console.log('page:', page)
     let url = `https://api.themoviedb.org/3/movie/${key}?api_key=${API_KEY}&language=en-US&page=${page}`
@@ -108,7 +110,7 @@ function App() {
     let response = await fetch(url);
     let data = await response.json();
     console.log('hehe data video:', data)
-    setTrailer(data.results[0].key)
+    setTrailer(data.results.length>0? data.results[0].key: 'uKLSQPhERnU');
     setModal(true);
   }
 
@@ -166,7 +168,7 @@ function App() {
         <div className="text-white d-flex justify-content-center mt-5">
       <ReactModal
         isOpen={modal}
-        style={{ overlay: {display:"flex",justifyContent:"center"}, content: {width:"70%",height:"70%", position:"relative"} }}
+        style={{ overlay: {display:"flex",justifyContent:"center",backgroundClip:"green"}, content: { width:"70%",height:"70%", position:"relative", margin:"auto"} }}
         onRequestClose={()=>setModal(false)}>
           <YouTube video={trailer} autoplay className="video"/>
         </ReactModal>

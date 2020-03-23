@@ -21,7 +21,7 @@ const MovieCard = (props) => {
             <MDBView hover zoom>
               <img src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`} class="img-fluid" alt={movie.title} />
               <MDBMask className="d-flex container-fluid" overlay="black-strong" >
-                  <Card.ImgOverlay className="text-white align-center my-auto scroll text-center">
+                  <Card.ImgOverlay className="text-white align-center my-auto scroll text-center" onClick={()=>props.openModal(movie.id)}>
                   <Card.Title><h3>{movie.title}</h3></Card.Title>
                   <Card.Text className="row d-flex justify-content-center">
                         {genreNames.map(genre => 
@@ -37,7 +37,6 @@ const MovieCard = (props) => {
             <Card.Footer><div style={{fontSize:15}}><span className="text-danger h5">&#9733;</span>{movie.vote_average}</div></Card.Footer>
             <p style={{fontSize:15}}><span className="text-danger">&hearts;</span>{movie.popularity}</p>
           </MDBContainer>
-          <a onClick={()=>props.openModal(movie.id)}>Trailer</a>
             </Card>
           
         )
