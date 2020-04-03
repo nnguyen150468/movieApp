@@ -75,6 +75,9 @@
   color: lightgrey;
 }
 
+.nav-link {
+  color: white
+}
 
 .range {
   width : 40%;
@@ -100,6 +103,34 @@
   height: 100%;
 }
 
-.nguyen-navbar {
-  background-color: black;
+.pagination > li > a
+{
+    background-color: #FC4D55;
+    color: white !Important;
+    border-style: none;
 }
+
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover
+{
+    color: white ; 
+    background-color: #E50914 !Important;
+    border-style: none;
+}
+
+.pagination > .active > a
+{
+    color: white;
+    background-color: #E50914 !Important;
+    border-style: none;
+}
+
+.pagination > .active > a:hover
+{
+    background-color: #E50914 !Important;
+    border-style: none;
+}
+

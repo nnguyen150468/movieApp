@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import './App.css';
 import MovieCard from './components/MovieCard'
 import NavbarComp from './components/NavbarComp'
 import Pagination from "react-js-pagination";
@@ -9,7 +8,7 @@ import 'react-input-range/lib/css/index.css';
 import Header from './components/Header';
 import ReactModal from 'react-modal';
 import YouTube from '@u-wave/react-youtube'
-
+import './App.css';
 
 let API_KEY = process.env.REACT_APP_APIKEY;
 let keyword = '';
@@ -40,6 +39,7 @@ function App() {
     let GenreUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`
     let GenreResponse = await fetch(GenreUrl)
     let genreListObject = await GenreResponse.json();
+    console.log('genreListObject',genreListObject.genres)
     setGenres(genreListObject.genres);
   }
 
@@ -58,30 +58,31 @@ function App() {
     let data = await response.json();
     console.log('top rated data:', data);
     setMovies(data.results)
+    setRatingValue({min:0, max: 10});
   }
 
   let searchByKeyWord = async (keyword) => {
     if(keyword === ''){
       setMovies(movieList);
     } else {
-      // setMovies(movies.filter((movie) => movie.title.toLowerCase().includes(keyword.toLowerCase())));
-      let url = `https://api.themoviedb.org/3/search/keyword?query=${keyword}&api_key=${API_KEY}&language=en-US&page=${page}`
-      let response = await fetch(url);
-      let data = await response.json();
-      let dataObject = data.results;
-      console.log('data searched by keyword:', dataObject);
-      setMovies(data.results);
+      setMovies(movies.filter((movie) => movie.title.toLowerCase().includes(keyword.toLowerCase())));
+      // let url = `https://api.themoviedb.org/3/search/keyword?query=${keyword}&api_key=${API_KEY}&language=en-US&page=${page}`
+      // let response = await fetch(url);
+      // let data = await response.json();
+      // let dataObject = data.results;
+      // console.log('data searched by keyword:', dataObject);
+      // setMovies(data.results);
     }
   }
 
   let [ratingValue, setRatingValue] = useState({min:0, max: 10});
   let ratingSliderChange = (newValue) => {
     setRatingValue(newValue);
-    console.log('rating value:', newValue);
+    console.log('rating value:', ratingValue);
     console.log('movieList:', movieList)
-    // console.log('value.min & max', newValue.value.min, newValue.value.max)
-    let filteredMovies = movieList.filter(movie => {
-       return movie.vote_average >= newValue.min && movie.vote_average <= newValue.max;
+    // console.log('value.min & max', ratingValue.value.min, ratingValue.value.max)
+    let filteredMovies = movies.filter(movie => {
+       return movie.vote_average >= ratingValue.min && movie.vote_average <= ratingValue.max;
     });
     console.log('filtered Movies:', filteredMovies)
     setMovies(filteredMovies);
@@ -136,7 +137,7 @@ function App() {
      <Header/>
      </div>
 
-      <div className="range col-md-5 mx-auto mt-5 container-fluid text-white">
+      <div className="range col-md-5 col-sm-12 mx-md-auto mt-5 container-fluid text-white">
       <InputRange
         maxValue={10}
         minValue={0}
@@ -151,12 +152,11 @@ function App() {
         isOpen={modal}
         style={{ overlay: {display:"flex",justifyContent:"center",backgroundClip:"green"}, content: { width:"70%",height:"70%", position:"relative", margin:"auto"} }}
         onRequestClose={()=>setModal(false)}>
-          <YouTube video={trailer} autoplay className="video"/>
-        </ReactModal>
-      
+        <YouTube video={trailer} autoplay className="video"/>
+      </ReactModal>
 
 
-      <Pagination
+      <Pagination className="pagination m-5 p-5"
       prevPageText='prev'
       nextPageText='next'
       firstPageText='first'
@@ -167,7 +167,8 @@ function App() {
       onChange={(pageNumber)=>handlePageChange(pageNumber)}
       itemClass="page-item"
       linkClass="page-link"
-    />
+      />
+
         </div>
     
     </div>
