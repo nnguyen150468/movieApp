@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Navbar, Nav, NavDropdown, Form, FormControl} from 'react-bootstrap'
 import MovieCard from './components/MovieCard'
+import NavbarComp from './components/NavbarComp'
 import Pagination from "react-js-pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import InputRange from 'react-input-range';
@@ -11,7 +11,7 @@ import ReactModal from 'react-modal';
 import YouTube from '@u-wave/react-youtube'
 
 
-let API_KEY = '26c6dfbd83ff3e3d65592404e691361e';
+let API_KEY = process.env.REACT_APP_APIKEY;
 let keyword = '';
 
 
@@ -29,13 +29,13 @@ function App() {
   let [trailer, setTrailer] = useState('');
 
   let CurrentPlaying = async () => {
-    console.log('currently playing')
-    let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=en-US&page=${page}`
+    let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1`
     let response = await fetch(url);
     let data = await response.json();
     setMovieList(data.results);
     setMoviePage(data);
     setMovies(data.results);
+    console.log('data:',data)
     console.log('movies:', data.results);
     let GenreUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`
     let GenreResponse = await fetch(GenreUrl)
@@ -43,8 +43,9 @@ function App() {
     setGenres(genreListObject.genres);
   }
 
-  useEffect(CurrentPlaying,[]);
-  
+  useEffect(()=> {
+    CurrentPlaying();
+  }, [])  
 
   let [key, setKey] = useState('now_playing')
   let PlayNowOrTopRated = async (key) => {
@@ -59,17 +60,17 @@ function App() {
     setMovies(data.results)
   }
 
-  let searchByKeyWord = async (e) => {
-    keyword = e.target.value;
+  let searchByKeyWord = async (keyword) => {
     if(keyword === ''){
       setMovies(movieList);
     } else {
-      setMovies(movies.filter((movie) => movie.title.toLowerCase().includes(keyword.toLowerCase())));
-      // let url = `https://api.themoviedb.org/3/search/keyword?query=${keyword}&api_key=${API_KEY}&language=en-US&page=${page}`
-      // let response = await fetch(url);
-      // let data = await response.json();
-      // let dataObject = data.results;
-      // console.log('data searched by keyword:', dataObject);
+      // setMovies(movies.filter((movie) => movie.title.toLowerCase().includes(keyword.toLowerCase())));
+      let url = `https://api.themoviedb.org/3/search/keyword?query=${keyword}&api_key=${API_KEY}&language=en-US&page=${page}`
+      let response = await fetch(url);
+      let data = await response.json();
+      let dataObject = data.results;
+      console.log('data searched by keyword:', dataObject);
+      setMovies(data.results);
     }
   }
 
@@ -129,28 +130,8 @@ function App() {
   
    return (
     <div className="App">
-              <Navbar className="nguyen-navbar fixed-top" expand="lg">
-          <Navbar.Brand href="#home"><img border="0" height="40px" src="https://fontmeme.com/permalink/200322/c759b45177dedb749000426d3db679bd.png" alt="Nguyen2"></img></Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" className="text-white bg-light" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="#home" style={{color: "white"}} onClick={()=>PlayNowOrTopRated('now_playing')}>Currently Playing</Nav.Link>
-              <Nav.Link href="#link" style={{color: "white"}} onClick={()=>PlayNowOrTopRated('top_rated')}>Top Rated</Nav.Link>
-              <NavDropdown title={<span className="text-white">Sort</span>} className="text-danger" id="basic-nav-dropdown">
-                {/* <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item> */}
-                <NavDropdown.Item className="bg-dark" href="#action/3.2"><a className="text-white" onClick={()=>mostToLeast('popularity')}>Most To Least Popular</a></NavDropdown.Item>
-                <NavDropdown.Item className="bg-dark" href="#action/3.3"><a className="text-white" onClick={()=>leastToMost('popularity')}>Least To Most Popular</a></NavDropdown.Item>
-                <NavDropdown.Divider bg="dark" />
-                <NavDropdown.Item className="bg-dark" href="#action/3.4"><a className="text-white" onClick={()=>mostToLeast('vote_average')}>Highest to Lowest Rating</a></NavDropdown.Item>
-                <NavDropdown.Item className="bg-dark" href="#action/3.5"><a className="text-white" onClick={()=>leastToMost('vote_average')}>Lowest to Highest Rating</a></NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-            <Form inline>
-              <FormControl type="text" onChange={(e)=>{searchByKeyWord(e)}} placeholder="Search" className="mr-sm-2" />
-            </Form>
-          </Navbar.Collapse>
-        </Navbar>
-
+          <NavbarComp PlayNowOrTopRated={PlayNowOrTopRated} mostToLeast={mostToLeast} 
+          leastToMost={leastToMost} searchByKeyWord={searchByKeyWord} />
      <div>
      <Header/>
      </div>
@@ -164,7 +145,7 @@ function App() {
         Rating
       </div>   
 
-      <MovieCard movieList={movies} genreList={genres} openModal={openModal}/>
+      <MovieCard movies={movies} genreList={genres} openModal={openModal}/>
         <div className="text-white d-flex justify-content-center mt-5">
       <ReactModal
         isOpen={modal}
