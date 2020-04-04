@@ -23,7 +23,7 @@ const MovieCard = (props) => {
     
 
         return (
-            <Card key={movie.id} className="nguyen-card col-md-6 col-lg-4 p-3" style={{backgroundColor: 'rgba(40,44,52,0.1'}}>
+            <Card key={movie.id} className="nguyen-card col-md-6 col-lg-4 p-3 border-0" style={{backgroundColor: 'rgba(40,44,52,0.1'}}>
                   <MDBContainer >
             <MDBView hover zoom>
               <img src={movie.poster_path?`https://image.tmdb.org/t/p/w1280${movie.poster_path}`:poster} className="img-fluid" alt={movie.title} />
@@ -36,7 +36,7 @@ const MovieCard = (props) => {
                     )}
                  </Card.Text>
                 
-                  <Card.Subtitle className="mb-2 date" style={{fontSize: 14}}>{movie.release_date.substring(0,4)}</Card.Subtitle>
+                  <Card.Subtitle className="mb-2 date" style={{fontSize: 14}}>{movie.release_date!==undefined? movie.release_date.substring(0,4) : ""}</Card.Subtitle>
                   <Card.Text style={{fontSize: 15}}>{movie.overview}</Card.Text>
                   </Card.ImgOverlay>    
               </MDBMask>

@@ -8,11 +8,10 @@ import 'react-input-range/lib/css/index.css';
 import Header from './components/Header';
 import ReactModal from 'react-modal';
 import YouTube from '@u-wave/react-youtube'
+import Genres from './components/Genres'
 import './App.css';
 
 let API_KEY = process.env.REACT_APP_APIKEY;
-let keyword = '';
-
 
 function App() {
   let [movies, setMovies] = useState([]);
@@ -21,11 +20,17 @@ function App() {
 
   let [genres, setGenres] = useState([]);
 
+  let [selectedGenre, setSelectedGenre] = useState(null)
+
   let [moviePage, setMoviePage] = useState({});
+
+  let [searchTerm, setSearchTerm] = useState(null);
 
   let [modal, setModal] = useState(false);
 
   let [trailer, setTrailer] = useState('');
+
+  let [ratingValue, setRatingValue] = useState({min:0, max: 10});
 
   let CurrentPlaying = async () => {
     let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1`
@@ -39,7 +44,8 @@ function App() {
     let GenreUrl = `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=en-US`
     let GenreResponse = await fetch(GenreUrl)
     let genreListObject = await GenreResponse.json();
-    console.log('genreListObject',genreListObject.genres)
+    console.log('genreListObject', genreListObject)
+    console.log('genreListObject.genres',genreListObject.genres)
     setGenres(genreListObject.genres);
   }
 
@@ -59,23 +65,28 @@ function App() {
     console.log('top rated data:', data);
     setMovies(data.results)
     setRatingValue({min:0, max: 10});
+    setSearchTerm("");
+    setSelectedGenre(null);
   }
 
   let searchByKeyWord = async (keyword) => {
+    setActivePage(1);
+    setSearchTerm(keyword);
+    setSelectedGenre(null);
     if(keyword === ''){
       setMovies(movieList);
     } else {
       setMovies(movies.filter((movie) => movie.title.toLowerCase().includes(keyword.toLowerCase())));
-      // let url = `https://api.themoviedb.org/3/search/keyword?query=${keyword}&api_key=${API_KEY}&language=en-US&page=${page}`
-      // let response = await fetch(url);
-      // let data = await response.json();
-      // let dataObject = data.results;
-      // console.log('data searched by keyword:', dataObject);
-      // setMovies(data.results);
+      let url = `https://api.themoviedb.org/3/search/movie?query=${keyword}&api_key=${API_KEY}&language=en-US&page=1`
+      let response = await fetch(url);
+      let data = await response.json();
+      console.log('data searched by keyword:', data);
+      setMoviePage(data);
+      setMovies(data.results);
     }
   }
 
-  let [ratingValue, setRatingValue] = useState({min:0, max: 10});
+  
   let ratingSliderChange = (newValue) => {
     setRatingValue(newValue);
     console.log('rating value:', ratingValue);
@@ -88,24 +99,39 @@ function App() {
     setMovies(filteredMovies);
   }
 
-  let mostToLeast = (key) => {
+  let mostToLeast = async (criterion) => {
+    setActivePage(1);
     if(!movies){
       setMovies(movieList);
     } else {
-      let mostToLeast = [...movies].sort((a,b)=>b[key] - a[key])
-      setMovies(mostToLeast);
-      console.log('most to least',mostToLeast);
+      let url = searchTerm? `https://api.themoviedb.org/3/discover/movie?with_keywords=${searchTerm}&api_key=${API_KEY}&language=en-US&page=1&sort_by=${criterion}.desc` 
+      : `https://api.themoviedb.org/3/discover/movie?${key}&api_key=${API_KEY}&language=en-US&page=1&sort_by=${criterion}.desc`;
+      let res = await fetch(url);
+      let data = await res.json();
+      console.log('most to least ',criterion, data)
+      setMoviePage(data);
+      setMovies(data.results);
+      setSelectedGenre(null);
     }
   }
 
-  let leastToMost = (key) => {
+  let leastToMost = async (criterion) => {
+    setActivePage(1);
     if(!movies){
       setMovies(movieList);
     } else {
-      let leastToMost = [...movies].sort((a,b)=>a[key]-b[key])
-      setMovies(leastToMost);
+      let url = searchTerm? `https://api.themoviedb.org/3/discover/movie?with_keywords=${searchTerm}&api_key=${API_KEY}&language=en-US&page=1&sort_by=${criterion}.asc` 
+      : `https://api.themoviedb.org/3/discover/movie?${key}&api_key=${API_KEY}&language=en-US&page=1&sort_by=${criterion}.asc`;
+      let res = await fetch(url);
+      let data = await res.json();
+      console.log('most to least ',criterion, data)
+      setMoviePage(data);
+      setMovies(data.results);
+      setSelectedGenre(null);
     }
   }
+
+  
 
   let openModal = async (movieID) => {
     let url = `https://api.themoviedb.org/3/movie/${movieID}/videos?api_key=${API_KEY}&language=en-US`;
@@ -122,7 +148,17 @@ function App() {
     setActivePage(pageNumber);
     console.log(`active page is ${pageNumber}`);
     console.log('key current is:', key);
-    let url = `https://api.themoviedb.org/3/movie/${key}?api_key=${API_KEY}&language=en-US&page=${pageNumber}`
+    // let url = searchTerm? `https://api.themoviedb.org/3/search/movie?query=${searchTerm}&api_key=${API_KEY}&language=en-US&page=${pageNumber}` :
+    //  `https://api.themoviedb.org/3/movie/${key}?api_key=${API_KEY}&language=en-US&page=${pageNumber}`
+    let url = ''
+    if(searchTerm){
+      url = `https://api.themoviedb.org/3/search/movie?query=${searchTerm}&api_key=${API_KEY}&language=en-US&page=${pageNumber}`
+    } else if(selectedGenre){
+      url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=${selectedGenre}&page=${pageNumber}`
+    } else {
+      url = `https://api.themoviedb.org/3/movie/${key}?api_key=${API_KEY}&language=en-US&page=${pageNumber}`
+    }
+
     let response = await fetch(url);
     let data = await response.json();
     console.log('top rated data:', data);
@@ -132,12 +168,16 @@ function App() {
    return (
     <div className="App">
           <NavbarComp PlayNowOrTopRated={PlayNowOrTopRated} mostToLeast={mostToLeast} 
-          leastToMost={leastToMost} searchByKeyWord={searchByKeyWord} />
+          leastToMost={leastToMost} searchByKeyWord={searchByKeyWord} setSearchTerm={setSearchTerm} />
      <div>
      <Header/>
      </div>
 
-      <div className="range col-md-5 col-sm-12 mx-md-auto mt-5 container-fluid text-white">
+      <div className="col-md-7 col-sm-10 mx-auto my-5 mb-5">
+      <Genres genres={genres} setMovies={setMovies} setMoviePage={setMoviePage} setActivePage={setActivePage} setSelectedGenre={setSelectedGenre}/>
+      </div>
+
+      <div className="range col-md-5 col-sm-12 mx-md-auto my-5 container-fluid text-white">
       <InputRange
         maxValue={10}
         minValue={0}

@@ -79,6 +79,17 @@
   color: white
 }
 
+.genre-select:hover {
+  background-color: #E50914;
+  cursor: pointer;
+}
+
+.genre-select:focus {
+  background-color: #E50914;
+  outline: none;
+}
+
+
 .range {
   width : 40%;
   margin-bottom : 20px;

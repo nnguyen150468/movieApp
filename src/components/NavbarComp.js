@@ -6,11 +6,12 @@ export default function NavbarComp(props) {
     const onSubmit = (e) => {
         e.preventDefault();
         props.searchByKeyWord(keyWord);
+        props.setSearchTerm(keyWord);
     }
 
     return (
         <Navbar onSubmit={onSubmit} className="fixed-top" style={{backgroundColor:"black"}} variant="dark" expand="lg">
-        <Navbar.Brand href="#home"><img border="0" height="40px" src="https://fontmeme.com/permalink/200322/c759b45177dedb749000426d3db679bd.png" alt="Nguyen2"></img></Navbar.Brand>
+        <Navbar.Brand href="#home" onClick={()=>props.PlayNowOrTopRated('now_playing')}><img border="0" height="40px" src="https://fontmeme.com/permalink/200322/c759b45177dedb749000426d3db679bd.png" alt="Nguyen2"></img></Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
